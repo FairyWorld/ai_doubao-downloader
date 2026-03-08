@@ -87,7 +87,7 @@ function App() {
   );
 
   const handleDownload = useCallback(
-    (convMessages: ConvMessage[]) => {
+    async (convMessages: ConvMessage[]) => {
       if (isDownloading) {
         Toast.warning("正在下载中，请勿重复下载");
         return;
@@ -96,10 +96,17 @@ function App() {
         Toast.warning("请选择要下载的图片");
         return;
       }
+      const downloadedArray = await db.downloaded.toArray();
+      const downloadedUrl = new Set(downloadedArray.map(item => item.url));
       const downloadImages = convMessages
         .filter(
           (conv): conv is ConvMessage & { creation: Creation } =>
             conv.creation != null,
+        )
+        // 过滤已下载的图片
+        .filter(
+          (conv) =>
+            !downloadedUrl.has(conv.creation.image.image_ori_raw.url),
         )
         .flatMap((conv) => {
           return {
@@ -109,12 +116,20 @@ function App() {
             url: conv.creation.image.image_ori_raw.url,
           };
         });
+      if (downloadImages.length === 0) {
+        Toast.warning(`没有可下载的图片，跳过已下载的图片数量：${downloadedUrl.size}`);
+        return;
+      }
       download(downloadImages, {
-        onProgress(current, total) {
-          if (total > 0 && current === total) {
-            Toast.success("下载完成");
-          }
-        },
+        onSave(){
+          Toast.success("下载完成");
+          // 批量添加
+          db.downloaded.bulkAdd(downloadImages.map(item => {
+            return {
+              url: item.url,
+            };
+          }));
+        }
       });
     },
     [download, isDownloading],
