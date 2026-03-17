@@ -62,22 +62,22 @@ function SettingModal({ isOpenSetting, onCloseSetting }: SettingModalProps) {
         </div>
 
         <div className="dd:flex dd:flex-row dd:items-center dd:gap-2">
+          <label className="dd:text-sm">{createFolder?.label}</label>
+          <Switch
+            checked={createFolder?.value}
+            onChange={(checked) => {
+              changeSetting(createFolder, checked);
+            }}
+          />
+        </div>
+
+        <div className="dd:flex dd:flex-row dd:items-center dd:gap-2">
           <label className="dd:text-sm">{customFilenameTemplate?.label}</label>
           <Input
             placeholder="请输入自定义文件名模板，为空则使用默认模板"
             value={customFilenameTemplate?.value}
             onChange={(value) => {
               changeSetting(customFilenameTemplate, value);
-            }}
-          />
-        </div>
-
-        <div className="dd:flex dd:flex-row dd:items-center dd:gap-2">
-          <label className="dd:text-sm">{createFolder?.label}</label>
-          <Switch
-            checked={createFolder?.value}
-            onChange={(checked) => {
-              changeSetting(createFolder, checked);
             }}
           />
         </div>
