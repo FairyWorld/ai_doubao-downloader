@@ -74,6 +74,17 @@ function extractCreations({
   return result;
 }
 
+function extractTtsContentText (tts_content: string) {
+  try {
+    const json = JSON.parse(tts_content);
+    if (json.text) {
+      return json.text;
+    }
+  } catch (error) {
+    return tts_content;
+  }
+};
+
 export function useJson({ showRaw = true, callback }: UseJsonProps) {
   const prevMessageIds = useRef<Set<string>>(new Set());
   useEffect(() => {
@@ -108,7 +119,7 @@ export function useJson({ showRaw = true, callback }: UseJsonProps) {
               const baseInfo: Partial<ConvMessage> = {
                 index_in_conv: Number(message.index_in_conv),
                 bot_reply_message_id: message.bot_reply_message_id,
-                tts_content: message.tts_content,
+                tts_content: extractTtsContentText(message.tts_content),
                 conversation_id: message.conversation_id,
                 message_id,
                 create_time: message.create_time * 1000,
