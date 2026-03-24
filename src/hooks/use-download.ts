@@ -74,6 +74,11 @@ export function useDownload() {
       const fileStream = streamSaver.createWriteStream(`${zipName}.zip`);
       const writer = fileStream.getWriter();
 
+      if (concurrency < 1 || concurrency > 32) {
+        onError("", new Error("并发数量必须在1到32之间"));
+        throw new Error("并发数量必须在1到32之间");
+      }
+
       const zipReadableStream = window.ZIP({
         async start(zipWriter: ZipWriter) {
           const limit = pLimit(concurrency);

@@ -1,4 +1,4 @@
-import { Modal, Switch, Toast, InputNumber, Input } from "@douyinfe/semi-ui-19";
+import { Modal, Switch, Toast, Input, InputNumber } from "@douyinfe/semi-ui-19";
 import { useCallback, useContext } from "react";
 import { SettingContext } from "@/context/SettingContext";
 import { Setting, SettingKey } from "@/types";
@@ -99,8 +99,9 @@ function SettingModal({ isOpenSetting, onCloseSetting }: SettingModalProps) {
         <div className="dd:flex dd:flex-row dd:items-center dd:gap-2">
           <label className="dd:text-sm">{downloadConcurrency?.label}</label>
           <InputNumber
-            min={0}
-            max={Number.MAX_SAFE_INTEGER}
+            min={1}
+            max={32}
+            hideButtons
             value={downloadConcurrencyLocal.value as number}
             onChange={downloadConcurrencyLocal.onChange}
           />
