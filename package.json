@@ -17,6 +17,7 @@
     "dexie": "^4.3.0",
     "dexie-react-hooks": "^4.2.0",
     "file-saver": "^2.0.5",
+    "lodash": "^4.17.23",
     "p-limit": "^7.2.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.7",
+    "@types/lodash": "^4.17.24",
     "@types/react": "^19.1.11",
     "@types/react-dom": "^19.1.7",
     "@types/streamsaver": "^2.0.5",
