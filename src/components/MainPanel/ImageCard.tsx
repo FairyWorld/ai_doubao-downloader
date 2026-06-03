@@ -12,6 +12,7 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ConvMessage } from "@/types";
 import { ConvContext } from "@/context/ConvContext";
+import { IconPlayCircle } from "@douyinfe/semi-icons";
 
 interface ImageCardProps {
   className?: string;
@@ -22,7 +23,7 @@ interface ImageCardProps {
 
 function ImageCard({ className, conv }: ImageCardProps) {
   const wh = useIsMobile() ? 120 : 133;
-  const { handleDownload, handleSelect, selectKeys } = useContext(ConvContext);
+  const { handleDownload, handlePlay, handleSelect, selectKeys } = useContext(ConvContext);
 
   const isSelected = useMemo(
     () => conv.creation && selectKeys.includes(conv.creation?.image.key),
@@ -69,6 +70,11 @@ function ImageCard({ className, conv }: ImageCardProps) {
         }
         checked={isSelected}
         className="dd:absolute! dd:top-1 dd:right-1"
+      />
+      <IconPlayCircle
+        size="extra-large"
+        className="dd:absolute! dd:top-3/8 dd:left-1/2 dd:-translate-x-1/2 dd:-translate-y-1/2 dd:cursor-pointer"
+        onClick={() => handlePlay(conv)}
       />
       <Space className="dd:mt-2!">
         <Button type="tertiary" onClick={showPrompt}>

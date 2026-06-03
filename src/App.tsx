@@ -59,23 +59,34 @@ function App() {
             (prev) => prev.message_id === message.message_id,
           ),
       );
-      newConv.length > 0 &&
-        Notification.info({
-          title: "豆包下载器",
-          content: (
-            <>
-              <div>
-                捕获到{newConv.filter((item) => item.creation).length}张图片，
-                <Typography.Text link onClick={() => handleDownload(newConv)}>
-                  点击此处下载图片
-                </Typography.Text>
-                。<br />
-                你也可以点击屏幕右侧豆包头像打开面板查看！
-              </div>
-            </>
-          ),
-          position: "bottomRight",
-        });
+      const newImageCount = newConv.filter(
+        (message) =>
+          message?.creation?.creation_type === "image"
+      ).length;
+      const newVideoCount = newConv.filter(
+        (message) =>
+          message?.creation?.creation_type === "video"
+      ).length;
+      if (newImageCount <= 0 && newVideoCount <= 0) return;
+      const content = `捕获到: ${newImageCount > 0 ? '图片[' + newImageCount + ']张' : ''} ${newVideoCount > 0 ? '视频[' + newVideoCount + ']个' : ''}`;
+      Notification.info({
+        title: "豆包下载器",
+        content: (
+          <>
+            <div>
+              {
+                content
+              }
+              <Typography.Text link onClick={() => handleDownload(newConv)}>
+                点击此处一键下载
+              </Typography.Text>
+              。<br />
+              你也可以点击屏幕右侧豆包头像打开面板查看！
+            </div>
+          </>
+        ),
+        position: "bottomRight",
+      });
       setConvMessageList((prev) => [...prev, ...newConv]);
     },
   });
@@ -159,6 +170,10 @@ function App() {
     [download, isDownloading, setting],
   );
 
+  const handlePlay = useCallback(async (convMessage: ConvMessage) => {
+    console.log(convMessage)
+  }, [download, isDownloading, setting])
+
   const handleDownloadAll = useCallback(() => {
     const selectConv = convFilter.showConvId;
     const downloadConv = convMessageList.filter(
@@ -215,6 +230,7 @@ function App() {
           selectKeys,
           handleSelect,
           handleDownload,
+          handlePlay,
           handleDownloadAll,
           handleDownloadSelected,
         }}
