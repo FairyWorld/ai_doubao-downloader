@@ -6,9 +6,6 @@ interface UseJsonProps {
   callback: (messages: ConvMessage[]) => void;
 }
 
-// TODO 将视频提取逻辑抽离为一个工具方法，以供点击播放按钮或下载时使用
-//const GET_VIDEO_INFO_URL = `https://www.doubao.com/samantha/media/get_play_info?version_code=20800&language=zh&device_platform=web&aid=497858&real_aid=497858&pkg_type=release_version&device_id=7622868208475047462&pc_version=3.20.2&web_id=&tea_uuid=&region=CN&sys_region=CN&samantha_web=1&web_platform=browser&use-olympus-account=1&web_tab_id=`;
-
 function findAllKeysInJson(obj: object, key: string): any[] {
   const results: any[] = [];
   function search(current: any) {
@@ -70,24 +67,6 @@ function extractCreations({
             },
           },
         } as ConvMessage);
-
-        // TODO 直接返回vid和封面，在面板点击下载或播放时再请求接口获取视频地址，下载时通过vid获取视频地址
-        // const response = await fetch(GET_VIDEO_INFO_URL, {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     key: creation.video.vid,
-        //   }),
-        // });
-        // const data = await response.json();
-        // if (data && data.code === 0 && baseInfo) {
-        //   const original_media_info = data.data.original_media_info;
-        //   if (original_media_info) {
-        //     const video_url = original_media_info.main_url;
-        //   }
-        // }
       }
       const image = creation?.image;
       if (!image) return;

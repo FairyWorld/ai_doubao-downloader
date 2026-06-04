@@ -13,6 +13,7 @@ import SettingModal from "./components/SettingModal";
 import { SettingContext } from "./context/SettingContext";
 import { useLiveQuery } from "dexie-react-hooks";
 import { completeSuffix, replaceTemplate } from "./utils/common";
+import { getVideoUrl } from "@/api/video";
 
 function App() {
   const [isOpenMainPanel, setIsOpenMainPanel] = useState(false);
@@ -171,7 +172,13 @@ function App() {
   );
 
   const handlePlay = useCallback(async (convMessage: ConvMessage) => {
-    console.log(convMessage)
+    if (!convMessage.creation.vid) return;
+    const playUrl = await getVideoUrl(convMessage.creation.vid)
+    if (!playUrl) {
+      Toast.error("获取视频播放地址失败");
+      return;
+    };
+    window.open(playUrl, "_blank");
   }, [download, isDownloading, setting])
 
   const handleDownloadAll = useCallback(() => {
