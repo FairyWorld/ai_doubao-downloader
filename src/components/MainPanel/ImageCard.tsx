@@ -71,11 +71,13 @@ function ImageCard({ className, conv }: ImageCardProps) {
         checked={isSelected}
         className="dd:absolute! dd:top-1 dd:right-1"
       />
-      <IconPlayCircle
-        size="extra-large"
-        className="dd:absolute! dd:top-3/8 dd:left-1/2 dd:-translate-x-1/2 dd:-translate-y-1/2 dd:cursor-pointer"
-        onClick={() => handlePlay(conv)}
-      />
+      {conv.creation.creation_type === "video" && (
+        <IconPlayCircle
+          size="extra-large"
+          className="dd:absolute! dd:top-3/8 dd:left-1/2 dd:-translate-x-1/2 dd:-translate-y-1/2 dd:cursor-pointer"
+          onClick={() => handlePlay(conv)}
+        />
+      )}
       <Space className="dd:mt-2!">
         <Button type="tertiary" onClick={showPrompt}>
           提示词
