@@ -193,18 +193,21 @@ function App() {
         Toast.warning("没有可下载的内容");
         return;
       }
+      // 视频缩略图URL，用于面板展示"已下载"标识
+      const videoThumbnailUrls = videoResults
+        .filter((r): r is PromiseFulfilledResult<{ conv: ConvMessage & { creation: Creation }; videoUrl: string }> => r.status === "fulfilled")
+        .map((r) => r.value.conv.creation.image.image_ori_raw.url);
+
       download(downloadImages, {
         concurrency: setting.find(
           (item) => item.key === "download_concurrency",
         )?.value || 5,
         onSave() {
           Toast.success("下载完成");
-          // 批量添加
-          db.downloaded.bulkAdd(
-            downloadImages.map((item) => ({
-              url: item.url,
-            })),
-          );
+          db.downloaded.bulkAdd([
+            ...downloadImages.map((item) => ({ url: item.url })),
+            ...videoThumbnailUrls.map((url) => ({ url })),
+          ]);
         },
         onError(url, error) {
           Toast.error(`下载失败 ${url}: ${error.message}`);

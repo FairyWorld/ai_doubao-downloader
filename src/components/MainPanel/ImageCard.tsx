@@ -8,6 +8,7 @@ import {
   Modal,
   Toast,
   Empty,
+  Tag,
 } from "@douyinfe/semi-ui-19";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ConvMessage } from "@/types";
@@ -17,17 +18,21 @@ import { IconPlayCircle } from "@douyinfe/semi-icons";
 interface ImageCardProps {
   className?: string;
   conv: ConvMessage;
+  downloadedUrls?: Set<string>;
 }
 
-// TODO 已下载图片显示已下载标识
-
-function ImageCard({ className, conv }: ImageCardProps) {
+function ImageCard({ className, conv, downloadedUrls }: ImageCardProps) {
   const wh = useIsMobile() ? 120 : 133;
   const { handleDownload, handlePlay, handleSelect, selectKeys } = useContext(ConvContext);
 
   const isSelected = useMemo(
     () => conv.creation && selectKeys.includes(conv.creation?.image.key),
     [conv, selectKeys],
+  );
+
+  const isDownloaded = useMemo(
+    () => conv.creation && downloadedUrls?.has(conv.creation.image.image_ori_raw.url),
+    [conv, downloadedUrls],
   );
 
   const showPrompt = useCallback(() => {
@@ -62,7 +67,17 @@ function ImageCard({ className, conv }: ImageCardProps) {
         width={wh}
         height={wh}
         src={conv.creation.image.image_ori_raw.url}
+        style={{ marginTop: "10px" }}
       />
+      {isDownloaded && (
+        <Tag
+          color="green"
+          className="dd:absolute! dd:top-1 dd:left-1"
+          size="small"
+        >
+          已下载
+        </Tag>
+      )}
       <Checkbox
         onChange={(e) =>
           conv.creation?.image.key &&
