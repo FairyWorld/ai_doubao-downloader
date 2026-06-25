@@ -88,6 +88,8 @@ function App() {
               </div>
             </>
           ),
+          duration: 10,
+          showClose: true,
           position: "bottomRight",
         });
         return [...prev, ...newConv];
