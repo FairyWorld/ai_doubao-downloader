@@ -6,7 +6,7 @@ import { ConvFilter, ConvMessage, Creation, Setting } from "./types";
 import { ConvContext } from "./context/ConvContext";
 import { ConvFilterContext } from "./context/ConvFilterContext";
 import { useDownload } from "./hooks/use-download";
-import { Notification, Toast, Typography } from "@douyinfe/semi-ui-19";
+import { Button, Notification, Toast, Typography } from "@douyinfe/semi-ui-19";
 import ProgressModal from "./components/ProgressModal";
 import { db, SettingService } from "./db";
 import SettingModal from "./components/SettingModal";
@@ -26,12 +26,41 @@ function App() {
     pageSize: 12,
   });
 
+  const { Text } = Typography;
+
   useEffect(() => {
     Notification.config({
       position: "bottomRight",
     });
     const settingService = new SettingService();
-    settingService.initDB();
+    settingService.initDB().catch((err) => {
+      console.error(`init db error: `, err);
+      Notification.error({
+        title: "数据库异常",
+        content: (
+          <Typography>
+            <Text>初始化数据库失败,请在IndexedDB中删除DouBao-Downloader后刷新页面重试</Text>
+            <br />
+            <br />
+            <Button theme="solid" onClick={() => {
+              settingService.reStoreDatabase().then(() => {
+                Toast.success("数据库已重置,3秒后自动刷新页面");
+                setTimeout(() => {
+                  window.location.reload();
+                }, 3000);
+              }).catch((err) => {
+                Toast.error("数据库重置失败,请在控制台查看详细错误");
+                console.error(`reStoreDatabase error: `, err);
+              });
+            }} type="danger">
+              点击重置数据库(这可能会导致资源下载记录丢失)
+            </Button>
+          </Typography>
+        ),
+        duration: 0,
+        position: "bottomRight",
+      });
+    })
   }, []);
 
   const { download, progress, isDownloading } = useDownload();
